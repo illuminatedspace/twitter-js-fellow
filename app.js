@@ -2,6 +2,7 @@
 const express = require('express');
 const volleyball = require('volleyball');
 const nunjucks = require('nunjucks');
+const routes = '/routes'
 // const chalk = require('chalk');
 
 //USING VOLLEYBALL INSTEAD
@@ -43,20 +44,23 @@ app.listen(3000, () => {
 //replaces above block
 app.use(volleyball);
 
-//a get route
-app.get('/', (req, res, next) => {
-  res.send('I get mine before I got got tho');
-});
+app.use('/', routes);
 
-const renderTestObject = {
-  title: 'Hall of Fame',
-  people: [
-    {name: 'Gandalf'},
-    {name: 'Frodo'},
-    {name: 'Hermione'}
-  ]
-}
+//replacing below with a router module
+// //a get route
+// app.get('/', (req, res, next) => {
+//   res.send('I get mine before I got got tho');
+// });
 
-app.get('/render-test', (req, res, next) => {
-  res.render('index', renderTestObject);
-})
+// const renderTestObject = {
+//   title: 'Hall of Fame',
+//   people: [
+//     {name: 'Gandalf'},
+//     {name: 'Frodo'},
+//     {name: 'Hermione'}
+//   ]
+// }
+
+// app.get('/render-test', (req, res, next) => {
+//   res.render('index', renderTestObject);
+// })
