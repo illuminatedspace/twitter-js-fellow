@@ -49,6 +49,7 @@ app.get('/', (req, res, next) => {
 });
 
 const renderTestObject = {
+  title: 'Hall of Fame',
   people: [
     {name: 'Gandalf'},
     {name: 'Frodo'},
@@ -57,6 +58,5 @@ const renderTestObject = {
 }
 
 app.get('/render-test', (req, res, next) => {
-  nunjucks.render('index.html', renderTestObject, (err, output) => console.log(output))
-  res.send()
+  res.render('index', renderTestObject);
 })
