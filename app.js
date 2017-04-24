@@ -2,7 +2,9 @@
 const express = require('express');
 const volleyball = require('volleyball');
 const nunjucks = require('nunjucks');
-const routes = '/routes'
+const routes = require('./routes/index.js');
+const fs = require('fs');
+const mime = require('mime');
 // const chalk = require('chalk');
 
 //USING VOLLEYBALL INSTEAD
@@ -43,6 +45,40 @@ app.listen(3000, () => {
 //inserts Volleyball as logging middleware
 //replaces above block
 app.use(volleyball);
+
+//static serve public folder
+app.use(express.static('public'));
+
+//replaced by single line above
+app.use('/', (req, res, next) => {
+  const path = req.path;
+  const file = `${__dirname}/public${path}`
+
+//works with or without mime. Don't know why we need it
+  // const mimeType = mime.lookup(req.path);
+
+  fs.readFile(file, (err, fileBuffer) => {
+    if (err) {
+      return next();
+    } else {
+      // res.header('Content-Type', mimeType);
+      res.sendFile(file);
+      //OR
+      //res.send(fileBuffer);
+    }
+  })
+})
+
+//given in the solution
+// app.use((req, res, next) => {
+//   const mimeType = mime.lookup(req.path);
+//   fs.readFile('./public' + req.path, (err, fileBuffer) => {
+//     if (err) return next();
+//     res.header('Content-Type', mimeType);
+//     res.send(fileBuffer);
+//   });
+// });
+
 
 app.use('/', routes);
 

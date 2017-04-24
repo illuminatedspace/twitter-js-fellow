@@ -1,11 +1,14 @@
 const _ = require('lodash');
 
-const _data = [{ name: 'Ada Lovelace',
-    content: 'Grace Hopper is Amazing! The instructors are just so kind. #ghlove #codedreams' }
+const _data = [{
+  name: 'Ada Lovelace',
+  content: 'Grace Hopper is Amazing! The instructors are just so kind. #ghlove #codedreams',
+  id: 1815
+}
 ];
 
-function add (name, content) {
-  _data.push({ name: name, content: content})
+function add (name, content, id) {
+  _data.push({ name: name, content: content, id: id})
 }
 
 function list () {
@@ -39,11 +42,11 @@ const getFakeTweet = function() {
 };
 
 for (let i = 0; i < 10; i++) {
-  module.exports.add( getFakeName(), getFakeTweet() );
+  module.exports.add( getFakeName(), getFakeTweet(), i);
 }
 
 //testing seed data
 // console.log(_data);
-// add('Liz Phillips', "I'm here too!!!");
+add('Liz Phillips', "I'm here too!!!", 19);
 // console.log("FOUND!", find({name: "Liz Phillips"}));
 // console.log(list());
