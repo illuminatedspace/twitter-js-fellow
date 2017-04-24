@@ -4,6 +4,7 @@ const volleyball = require('volleyball');
 const nunjucks = require('nunjucks');
 const routes = require('./routes/index.js');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 const mime = require('mime');
 // const chalk = require('chalk');
 
@@ -41,6 +42,10 @@ app.listen(3000, () => {
 //   request(req, res)
 //   next();
 // })
+
+//bodyParser middleware to parse the body
+app.use(bodyParser.urlencoded({ entended: false }));
+app.use(bodyParser.json());
 
 //inserts Volleyball as logging middleware
 //replaces above block
