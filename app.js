@@ -1,24 +1,31 @@
 //module require-s
 const express = require('express');
-const volleyball = require('volleyball');
+// const volleyball = require('volleyball');
 const nunjucks = require('nunjucks');
 const routes = require('./routes/index.js');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const mime = require('mime');
-// const chalk = require('chalk');
+const chalk = require('chalk');
+const socketio = require('socket.io')
 
-//USING VOLLEYBALL INSTEAD
 //chalk styles
-// const reqLogType = chalk.dim.bgBlue;
-// const reqLogPath = chalk.blue;
+const reqLogType = chalk.dim.bgBlue;
+const reqLogPath = chalk.blue;
+const resLogStatus = chalk.dim.yellow;
+const idLog = chalk.gray;
 
-//chalk logging methods
-//getting this to log response status codes is kind of crazy.
-// const request = function (reqObject, resObject) {
-//   const logString = `${reqLogType(reqObject.method)} ${reqLogPath(reqObject.path)}`;
-//   console.log(logString);
-// }
+// chalk logging methods
+// getting this to log response status codes is kind of crazy.
+const request = function (reqObject, id) {
+  const logString = `${idLog(id)} --> ${reqLogType(reqObject.method)} ${reqLogPath(reqObject.path)}`;
+  console.log(logString);
+}
+
+const response = function (resObject, id) {
+  const logString = `${idLog(id)} <-- ${resLogStatus(resObject.statusCode)}`;
+  console.log(logString);
+}
 
 //initialize express application
 const app = express();
@@ -32,27 +39,35 @@ app.engine('html', nunjucks.render);
 nunjucks.configure('views', { noCache: true });
 
 //start listening, doesn't matter where this is
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log('listening on port 3000!');
 });
 
+const io = socketio.listen(server);
+
 //creates applicaiton level middleware with .use
 //can print req type and req path
-// app.use((req, res, next) => {
-//   request(req, res)
-//   next();
-// })
-
-//bodyParser middleware to parse the body
-app.use(bodyParser.urlencoded({ entended: false }));
-app.use(bodyParser.json());
+app.use((req, res, next) => {
+  const id = Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+  request(req, id);
+  res.on('finish', () => {
+    response(res, id);
+  })
+  next();
+});
 
 //inserts Volleyball as logging middleware
 //replaces above block
-app.use(volleyball);
+// app.use(volleyball);
 
 //static serve public folder
 app.use(express.static('public'));
+
+// //bodyParser middleware to parse the body
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //replaced by single line above
 app.use('/', (req, res, next) => {
@@ -85,7 +100,7 @@ app.use('/', (req, res, next) => {
 // });
 
 
-app.use('/', routes);
+app.use('/', routes(io));
 
 //replacing below with a router module
 // //a get route

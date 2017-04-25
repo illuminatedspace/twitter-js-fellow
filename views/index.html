@@ -15,8 +15,11 @@
       {% if showForm %}
         <form action="/tweets" method="POST">
           <label for="name_field">Name:</label>
-          <input name="name" type="text" id="name_field" />
-
+          {% if name %}
+            <input name="name" type="text" id="name_field" value={{ name }}>
+          {% else %}
+            <input name="name" type="text" id="name_field">
+          {% endif %}
           <label for="text_field">Text:</label>
           <input name="text" type="text" id="text_field" style="width: 350px;" />
 
@@ -37,7 +40,6 @@
             <p>
               <a href="/tweets/{{tweet.id}}">
                 {{tweet.content}}
-                }
               </a>
             </p>
 <!--             <li>{{tweet.content}}</li> -->
